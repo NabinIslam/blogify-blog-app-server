@@ -3,7 +3,7 @@ const Post = require('../models/postModel');
 
 const handleCreatePost = async (req, res, next) => {
   try {
-    const { title, content, image, author } = req.body;
+    const { title, content, image, category, author } = req.body;
 
     const postExists = await Post.exists({ title });
 
@@ -18,6 +18,7 @@ const handleCreatePost = async (req, res, next) => {
       slug: slugify(title),
       content,
       image,
+      category,
       author,
     });
 

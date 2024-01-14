@@ -5,15 +5,22 @@ const handleCreateCategory = async (req, res, next) => {
   try {
     const { name } = req.body;
 
+    const alraedyExists = await Category.findOne({ name });
+
+    if (alraedyExists)
+      return res
+        .status(404)
+        .json({ success: false, message: `This category already exists` });
+
     const newCategory = await Category.create({
-      name: name,
+      name,
       slug: slugify(name),
     });
 
     if (!newCategory)
       return res
         .status(404)
-        .json({ success: false, message: `Could not create category` });
+        .json({ success: false, message: `Could not create the category` });
 
     return res.status(200).json({
       success: true,
