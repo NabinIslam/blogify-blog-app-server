@@ -59,4 +59,26 @@ const handleGetAllPosts = async (req, res, next) => {
   }
 };
 
-module.exports = { handleCreatePost, handleGetAllPosts };
+const handleGetSinglePost = async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+
+    const post = await Post.findOne({ slug });
+
+    if (!post)
+      return res.status(409).json({
+        success: false,
+        message: `Post not found.`,
+      });
+
+    return res.status(200).json({
+      success: true,
+      message: `Post fetched successfully`,
+      post,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { handleCreatePost, handleGetAllPosts, handleGetSinglePost };
