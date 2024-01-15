@@ -42,7 +42,7 @@ const handleGetAllPosts = async (req, res, next) => {
 
     if (sortQuery === 'oldest') sort = { createdAt: 1 };
 
-    const posts = await Post.find({}).sort(sort);
+    const posts = await Post.find({}).sort(sort).populate('category');
 
     if (!posts)
       return res.status(409).json({
@@ -64,7 +64,7 @@ const handleGetSinglePost = async (req, res, next) => {
   try {
     const { slug } = req.params;
 
-    const post = await Post.findOne({ slug });
+    const post = await Post.findOne({ slug }).populate('category');
 
     if (!post)
       return res.status(409).json({
