@@ -1,5 +1,6 @@
 const slugify = require('slugify');
 const Post = require('../models/postModel');
+const Category = require('../models/categoryModel');
 
 const handleCreatePost = async (req, res, next) => {
   try {
@@ -35,6 +36,15 @@ const handleCreatePost = async (req, res, next) => {
 const handleGetAllPosts = async (req, res, next) => {
   try {
     let sort = { createdAt: -1 };
+    let filter = {};
+
+    const categoryName = req.query.category;
+
+    if (categoryName) {
+      const category = await Category.findOne({ slug: categoryName });
+
+      filter = { category: category._id };
+    }
 
     const sortQuery = req.query.sort;
 
@@ -42,7 +52,7 @@ const handleGetAllPosts = async (req, res, next) => {
 
     if (sortQuery === 'oldest') sort = { createdAt: 1 };
 
-    const posts = await Post.find({}).sort(sort).populate('category');
+    const posts = await Post.find(filter).sort(sort).populate('category');
 
     if (!posts)
       return res.status(409).json({
