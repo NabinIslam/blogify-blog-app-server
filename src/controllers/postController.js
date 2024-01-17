@@ -92,4 +92,33 @@ const handleGetSinglePost = async (req, res, next) => {
   }
 };
 
-module.exports = { handleCreatePost, handleGetAllPosts, handleGetSinglePost };
+const handleGetPostsByEmail = async (req, res, next) => {
+  try {
+    const { email } = req.params;
+
+    const posts = await Post.find({ 'author.email': email }).populate(
+      'category'
+    );
+
+    if (!posts)
+      return res.status(409).json({
+        success: false,
+        message: `Posts not found.`,
+      });
+
+    return res.status(200).json({
+      success: true,
+      message: `Posts fetched successfully`,
+      posts,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  handleCreatePost,
+  handleGetAllPosts,
+  handleGetSinglePost,
+  handleGetPostsByEmail,
+};
