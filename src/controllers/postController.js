@@ -70,6 +70,28 @@ const handleGetAllPosts = async (req, res, next) => {
   }
 };
 
+const handleGetPostById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const post = await Post.findOne({ _id: id }).populate('category');
+
+    if (!post)
+      return res.status(409).json({
+        success: false,
+        message: `Post not found.`,
+      });
+
+    return res.status(200).json({
+      success: true,
+      message: `Post fetched successfully`,
+      post,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const handleGetSinglePost = async (req, res, next) => {
   try {
     const { slug } = req.params;
@@ -143,4 +165,5 @@ module.exports = {
   handleGetSinglePost,
   handleGetPostsByEmail,
   handleDeletePostById,
+  handleGetPostById,
 };
