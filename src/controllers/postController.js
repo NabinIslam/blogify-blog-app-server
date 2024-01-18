@@ -116,9 +116,31 @@ const handleGetPostsByEmail = async (req, res, next) => {
   }
 };
 
+const handleDeletePostById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const result = await Post.findOneAndDelete({ _id: id });
+
+    if (!result)
+      return res.status(409).json({
+        success: false,
+        message: `Could not delete the post`,
+      });
+
+    return res.status(200).json({
+      success: true,
+      message: `Post deleted successfully`,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   handleCreatePost,
   handleGetAllPosts,
   handleGetSinglePost,
   handleGetPostsByEmail,
+  handleDeletePostById,
 };
